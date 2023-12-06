@@ -2,6 +2,7 @@
 
 from ev3dev2.sensor.lego import UltrasonicSensor
 from time import sleep, time
+import operator
 import math
 import sys
 from direction import Direction
@@ -26,95 +27,112 @@ def getNeighbor(position, direction):
     if direction == Direction.WEST:
         return (x - 1, y)
     
+def Move(value, mouse_coord):
+    print(mouse_coord, file=sys.stderr)
+    if value == 0 and mouse_coord not in coordinate_list or mouse_coord == [0,0]:
+        movement.turnLeft()
+        coordinate_list.append(mouse_coord)
+    elif value == 1 and mouse_coord not in coordinate_list or mouse_coord == [0,0]:
+        movement.turnRight()
+        coordinate_list.append(mouse_coord)
+    elif value == 2 :
+        if mouse_coord not in coordinate_list or mouse_coord == [0,0]:
+            movement.moveForward()
+            coordinate_list.append(mouse_coord)
+    elif value == 3 and mouse_coord not in coordinate_list or mouse_coord == [0,0]:
+        movement.turnAround()
+        coordinate_list.append(mouse_coord)
+    
 def main():
     x,y = 0,0
-    Mouse_init = (x, y)
+    Mouse_init = [x, y]    
     coordinate_list.append(Mouse_init)
 
-    while abs(x) < 8 or abs(y) < 8:
-        
-        if left_sensor.distance_centimeters > 10:
-            if front_sensor.distance_centimeters < 3:
-                while abs(front_sensor.distance_centimeters - back_sensor.distance_centimeters) > 1:
-                    movement.turnAround()
-                    sleep(0.2)
-            if back_sensor.distance_centimeters < 3:
-                while abs(back_sensor.distance_centimeters - front_sensor.distance_centimeters) > 1:
-                    movement.moveForward()
-                    sleep(0.2)
-            Mouse_neighbor = getNeighbor(Mouse_init, Direction.WEST)
-            if Mouse_neighbor not in coordinate_list: 
+
+    while abs(x) < 3 or abs(y) < 3:
+       # print(Mouse_init, file=sys.stderr)
+        all_sensors = [left_sensor.distance_centimeters, right_sensor.distance_centimeters,front_sensor.distance_centimeters, back_sensor.distance_centimeters]
+        temp_x = Mouse_init[0]
+        temp_y = Mouse_init[1]
+        distance_check = 20
+        max_i = 0
+        max_dist = -1
+      #  print(all_sensors, file=sys.stderr)
+        for i in range(len(all_sensors)):
+            if all_sensors[i] > max_dist:
+             max_dist = all_sensors[i]
+             max_i=i
+        print( max_i, file=sys.stderr)
+        sleep(2)
+        Move(max_i, Mouse_init)
+        '''
+        if left_sensor.distance_centimeters > distance_check or right_sensor.distance_centimeters > 10:
+            if left_sensor.distance_centimeters > right_sensor.distance_centimeters:
+                Mouse_init = getNeighbor(Mouse_init, Direction.WEST)
+            elif left_sensor.distance_centimeters < right_sensor.distance_centimeters:
+                Mouse_init = getNeighbor(Mouse_init, Direction.EAST)
+
+            if x < temp_x and Mouse_init not in coordinate_list and x > -1:
                 movement.turnLeft()
-                coordinate_list.append(Mouse_neighbor)
-                Mouse_init = Mouse_neighbor
+            elif x > temp_x and Mouse_init not in coordinate_list and x > -1:
+                 movement.turnRight()
+
+
+        if front_sensor.distance_centimeters > 10 or back_sensor.distance_centimeters > 10:
+            if front_sensor.distance_centimeters > back_sensor.distance_centimeters:
+                Mouse_init = getNeighbor(Mouse_init, Direction.NORTH)
+            elif front_sensor.distance_centimeters < back_sensor.distance_centimeters:
+                Mouse_init = getNeighbor(Mouse_init, Direction.SOUTH)
+            
+            if y > temp_y and Mouse_init not in coordinate_list and y > -1:
+                movement.moveForward()
+            elif y < temp_y and Mouse_init not in coordinate_list and y> -1:
+                 movement.turnAround()
+                '''
+
+
+'''
+        if left_sensor.distance_centimeters < 10 and right_sensor.distance_centimeters < 10 and front_sensor.distance_centimeters > 10:
+        if left_sensor.distance_centimeters > 10:
+
+            Mouse_init = getNeighbor(Mouse_init, Direction.WEST)
+            if Mouse_init not in coordinate_list: 
+                movement.turnLeft()
+                coordinate_list.append(Mouse_init)
             else:
                 continue
 
         elif right_sensor.distance_centimeters > 10:
-            if front_sensor.distance_centimeters < 3:
-                while abs(front_sensor.distance_centimeters - back_sensor.distance_centimeters) > 1:
-                    movement.turnAround()
-                    sleep(0.2)
-            if back_sensor.distance_centimeters < 3:
-                while abs(back_sensor.distance_centimeters - front_sensor.distance_centimeters) > 1:
-                    movement.moveForward()
-                    sleep(0.2)
-            Mouse_neighbor = getNeighbor(Mouse_init, Direction.EAST)
-            if Mouse_neighbor not in coordinate_list:
+            
+            Mouse_init = getNeighbor(Mouse_init, Direction.EAST)
+            if Mouse_init not in coordinate_list:
                 movement.turnRight()
-                coordinate_list.append(Mouse_neighbor)
-                Mouse_init = Mouse_neighbor
+                coordinate_list.append(Mouse_init)
             else:
                 continue
 
         elif front_sensor.distance_centimeters > 10:
-            print("hahagagagagaga", file=sys.stderr)
-            if left_sensor.distance_centimeters < 3:
-                while abs(left_sensor.distance_centimeters - right_sensor.distance_centimeters) > 1:
-                    movement.turnRight()
-                    sleep(0.2)
-            if right_sensor.distance_centimeters < 3:
-                while abs(right_sensor.distance_centimeters - left_sensor.distance_centimeters) > 1:
-                    movement.turnLeft()
-                    sleep(0.2)
-            print("hahagagagagaga", file=sys.stderr)
-            Mouse_neighbor = getNeighbor(Mouse_init, Direction.NORTH)
-            print(coordinate_list, file=sys.stderr)
-            print(Mouse_neighbor, file=sys.stderr)
-            #print("hahagagagagaga", file=sys.stderr)
-            if Mouse_neighbor not in coordinate_list:
-                movement.moveForward()
-                print(Mouse_neighbor, file=sys.stderr)
-                #print("hahagagagagaga", file=sys.stderr)
 
-                coordinate_list.append(Mouse_neighbor)
-                Mouse_init = Mouse_neighbor
+            Mouse_init = getNeighbor(Mouse_init, Direction.NORTH)
+            if Mouse_init not in coordinate_list:
+                movement.moveForward()
+                print(Mouse_init, file=sys.stderr)
+                coordinate_list.append(Mouse_init)
             else:
                 continue
             
         elif back_sensor.distance_centimeters > 10:
-            if left_sensor.distance_centimeters < 3:
-                while abs(left_sensor.distance_centimeters - right_sensor.distance_centimeters) > 1:
-                    movement.turnRight()
-                    sleep(0.2)
-            if right_sensor.distance_centimeters < 3:
-                while abs(right_sensor.distance_centimeters - left_sensor.distance_centimeters) > 1:
-                    movement.turnLeft()
-                    sleep(0.2)
-            Mouse_neighbor = getNeighbor(Mouse_init, Direction.SOUTH)
-            if Mouse_neighbor not in coordinate_list:
+            Mouse_init = getNeighbor(Mouse_init, Direction.SOUTH)
+            if Mouse_init not in coordinate_list:
                 movement.turnAround()
-                coordinate_list.append(Mouse_neighbor)
-                Mouse_init = Mouse_neighbor
+                coordinate_list.append(Mouse_init)
             else:
                 continue
-            
+           
         else:
             Mouse_init = getNeighbor(Mouse_init, Direction.EAST)
             coordinate_list.append(Mouse_init)
-        
-    #movement.moveForward()
-    #movement.moveForward()
-    print("broken", file=sys.stderr)
+                '''  
+#print("broken", file=sys.stderr)
 if __name__ == "__main__":
     main()
