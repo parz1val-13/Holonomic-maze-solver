@@ -51,45 +51,38 @@ def moveOppositeDirection(direction):
     center_robot(direction)
         
 def center_robot(direction):
-    a = left_sensor.distance_centimeters
-    b = right_sensor.distance_centimeters
-    c = front_sensor.distance_centimeters
-    d = back_sensor.distance_centimeters
     if direction in [Direction.NORTH, Direction.SOUTH]:
         # Use sensors 2 and 4 to center
-        while abs(a - b) > 1:
-            if a > b:
-                if right_sensor.distance_centimeters < 2:
+        left_distance = left_sensor.distance_centimeters_continuous
+        right_distance = right_sensor.distance_centimeters_continuous
+        while abs(left_distance - right_distance) > 1:
+            if left_distance > right_distance:
+                if right_distance < 2:
                     break
                 movement.adjustRight()
-                sleep(0.1)  # Allow some time for the robot to adjust
-                a= left_sensor.distance_centimeters_continuous
-                b = right_sensor.distance_centimeters_continuous
             else:
-                if a < 2:
+                if left_distance < 2:
                     break
                 movement.adjustLeft()
-                sleep(0.1)  # Allow some time for the robot to adjust
-                a = left_sensor.distance_centimeters_continuous
-                b = right_sensor.distance_centimeters_continuous
+            sleep(0.1)  # Allow some time for the robot to adjust
+            left_distance = left_sensor.distance_centimeters_continuous
+            right_distance = right_sensor.distance_centimeters_continuous
     elif direction in [Direction.EAST, Direction.WEST]:
         # Use sensors 1 and 3 to center
-        while abs(c - d) > 1:
-            if c > d:
-                if d < 2:
+        front_distance = front_sensor.distance_centimeters_continuous
+        back_distance = back_sensor.distance_centimeters_continuous
+        while abs(front_distance - back_distance) > 1:
+            if front_distance > back_distance:
+                if back_distance < 2:
                     break
                 movement.adjustForward()
-                sleep(0.1)  # Allow some time for the robot to adjust
-                c = front_sensor.distance_centimeters_continuous
-                d = back_sensor.distance_centimeters_continuous
             else:
-                if c < 2:
+                if front_distance < 2:
                     break
                 movement.adjustAround()
-                sleep(0.1)  # Allow some time for the robot to adjust
-                c = front_sensor.distance_centimeters_continuous
-                d = back_sensor.distance_centimeters_continuous
-
+            sleep(0.1)  # Allow some time for the robot to adjust
+            front_distance = front_sensor.distance_centimeters_continuous
+            back_distance = back_sensor.distance_centimeters_continuous
 
 
 def getValidNeighbors(x, y):
