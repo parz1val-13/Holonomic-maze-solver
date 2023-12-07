@@ -46,9 +46,25 @@ def moveForward():
     motor2.off()
     motor3.off()
 
+def adjustForward():
+    set_motor_speeds(*F_foward)
+    sleep(0.2)
+    # Stop the motors.
+    motor1.off()
+    motor2.off()
+    motor3.off()
+
 def turnLeft():
     set_motor_speeds(*F_left)
     sleep(1.5)
+    # Stop the motors.
+    motor1.off()
+    motor2.off()
+    motor3.off()
+
+def adjustLeft():
+    set_motor_speeds(*F_left)
+    sleep(0.2)
     # Stop the motors.
     motor1.off()
     motor2.off()
@@ -62,9 +78,25 @@ def turnRight():
     motor2.off()
     motor3.off()
 
+def adjustRight():
+    set_motor_speeds(*F_right)
+    sleep(0.2)
+    # Stop the motors.
+    motor1.off()
+    motor2.off()
+    motor3.off()
+
 def turnAround():
     set_motor_speeds(*F_back)
     sleep(1.5)
+    # Stop the motors.
+    motor1.off()
+    motor2.off()
+    motor3.off()
+
+def adjustAround():
+    set_motor_speeds(*F_back)
+    sleep(0.2)
     # Stop the motors.
     motor1.off()
     motor2.off()

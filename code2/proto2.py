@@ -30,24 +30,41 @@ def getCoordinate(x, y, direction):
 def moveInDirection(direction):
     if direction == Direction.NORTH:
         movement.moveForward()
-    if direction == Direction.SOUTH:
+    elif direction == Direction.SOUTH:
         movement.turnAround()
-    if direction == Direction.EAST:
+    elif direction == Direction.EAST:
         movement.turnRight()
-    if direction == Direction.WEST:
+    elif direction == Direction.WEST:
         movement.turnLeft()
+    center_robot(direction)
 
 
 def moveOppositeDirection(direction):
     if direction == Direction.NORTH:
         movement.turnAround()        
-    if direction == Direction.SOUTH:
+    elif direction == Direction.SOUTH:
         movement.moveForward()
-    if direction == Direction.EAST:
+    elif direction == Direction.EAST:
         movement.turnLeft()       
-    if direction == Direction.WEST:
+    elif direction == Direction.WEST:
         movement.turnRight()
+    center_robot(direction)
         
+def center_robot(direction):
+    if direction in [Direction.NORTH, Direction.SOUTH]:
+        # Use sensors 2 and 4 to center
+        while abs(left_sensor.distance_centimeters - right_sensor.distance_centimeters) > 1:
+            if left_sensor.distance_centimeters > right_sensor.distance_centimeters:
+                movement.adjustRight()
+            else:
+                movement.adjustLeft()
+    elif direction in [Direction.EAST, Direction.WEST]:
+        # Use sensors 1 and 3 to center
+        while abs(front_sensor.distance_centimeters - back_sensor.distance_centimeters) > 1:
+            if front_sensor.distance_centimeters > back_sensor.distance_centimeters:
+                movement.adjustForward()
+            else:
+                movement.adjustAround()
 
 def getValidNeighbors(x, y):
     validDirections = []
