@@ -58,10 +58,16 @@ def center_robot(direction):
                 if right_sensor.distance_centimeters < 2:
                     break
                 movement.adjustRight()
+                sleep(0.1)  # Allow some time for the robot to adjust
+                left_sensor.distance_centimeters = left_sensor.distance_centimeters_continuous
+                right_sensor.distance_centimeters = right_sensor.distance_centimeters_continuous
             else:
                 if left_sensor.distance_centimeters < 2:
                     break
                 movement.adjustLeft()
+                sleep(0.1)  # Allow some time for the robot to adjust
+                left_sensor.distance_centimeters = left_sensor.distance_centimeters_continuous
+                right_sensor.distance_centimeters = right_sensor.distance_centimeters_continuous
     elif direction in [Direction.EAST, Direction.WEST]:
         # Use sensors 1 and 3 to center
         while abs(front_sensor.distance_centimeters - back_sensor.distance_centimeters) > 1:
@@ -69,10 +75,17 @@ def center_robot(direction):
                 if back_sensor.distance_centimeters < 2:
                     break
                 movement.adjustForward()
+                sleep(0.1)  # Allow some time for the robot to adjust
+                front_sensor.distance_centimeters = front_sensor.distance_centimeters_continuous
+                back_sensor.distance_centimeters = back_sensor.distance_centimeters_continuous
             else:
                 if front_sensor.distance_centimeters < 2:
                     break
                 movement.adjustAround()
+                sleep(0.1)  # Allow some time for the robot to adjust
+                front_sensor.distance_centimeters = front_sensor.distance_centimeters_continuous
+                back_sensor.distance_centimeters = back_sensor.distance_centimeters_continuous
+
 
 
 def getValidNeighbors(x, y):
