@@ -125,8 +125,6 @@ def getValidNeighbors(x, y):
         print('Solved the maze', file=sys.stderr)
         my_coordinates = record_path
         result = delete_between_coordinates(my_coordinates.copy())
-        print(result)
-
         new_list = []
 
         for i in result:
@@ -134,6 +132,7 @@ def getValidNeighbors(x, y):
                 new_list.append(i)
 
         print(new_list, file=sys.stderr)
+        runner(0,0,new_list)
         
         exit()
 
@@ -145,6 +144,20 @@ def getValidNeighbors(x, y):
 
     return validNeighbors
 
+def runner(a, b, mylist):
+    for i in range(len(mylist) - 1):
+        x, y = mylist[i]
+        next_x, _ = mylist[i + 1]
+        _, next_y = mylist[i + 1]
+        
+        if x > next_x:
+            print("moveLeft")
+        elif x < next_x:
+            print("moveRight")
+        if y > next_y:
+            print("moveBack")
+        elif y < next_y:
+            print("moveFoward")
 
 def dfs(x, y):
     global visited
@@ -156,24 +169,6 @@ def dfs(x, y):
         moveInDirection(d)
         dfs(a, b) 
         moveOppositeDirection(d)
-'''
-def learnt_path_move(final_list):
-    for i in range(final_list):
-
-# Online Python - IDE, Editor, Compiler, Interpreter
-
-def runner(a,b,mylist):
-        for x, y in my_coordinates:
-            print("x:", x, ", y:", y)
-            a = x
-            b = y
-            
- 
-
-
-my_coordinates = [(1, 2), (3, 4), (1, 2), (5, 6), (3, 4), (7, 8) , (3,4)]
-runner(a,b,my_coordinates)
-'''
     
 def main():
     dfs(0, 0)
