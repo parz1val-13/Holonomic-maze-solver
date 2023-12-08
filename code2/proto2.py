@@ -14,6 +14,10 @@ sensors = [front_sensor, back_sensor, left_sensor, right_sensor]
 directions = [Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST]
 
 visited = set()
+a = 0
+b = 0
+record_path = []
+record_path.append((a,b))
 
 
 def getCoordinate(x, y, direction):
@@ -28,27 +32,45 @@ def getCoordinate(x, y, direction):
     
 
 def moveInDirection(direction):
+
+    global a
+    global b
     if direction == Direction.NORTH:
         movement.moveForward()
+        a = a + 1
     elif direction == Direction.SOUTH:
         movement.turnAround()
+        a = a - 1
     elif direction == Direction.EAST:
         movement.turnRight()
+        b = b + 1
     elif direction == Direction.WEST:
         movement.turnLeft()
+        b = b - 1
     center_robot(direction)
+    record = (a,b)
+    record_path.append(record)
 
 
 def moveOppositeDirection(direction):
+    global a
+    global b
     if direction == Direction.NORTH:
-        movement.turnAround()        
+        movement.turnAround()
+        a = a - 1        
     elif direction == Direction.SOUTH:
         movement.moveForward()
+        a = a + 1
     elif direction == Direction.EAST:
-        movement.turnLeft()       
+        movement.turnLeft()  
+        b = b - 1     
     elif direction == Direction.WEST:
+        b = b + 1
         movement.turnRight()
     center_robot(direction)
+    record = (a,b)
+    record_path.append(record)
+
         
 def center_robot(direction):
     if direction in [Direction.NORTH, Direction.SOUTH]:
@@ -70,14 +92,30 @@ def center_robot(direction):
             else:
                 movement.adjustAround()
 
+def delete_between_coordinates(lst):
+    i = 0
+    while i < len(lst):
+        current_coords = lst[i]
+        # Find the next occurrence of the current coordinates
+        j = i + 1
+        while j < len(lst) and lst[j] != current_coords:
+            j += 1
 
+        # If a duplicate is found, delete everything between occurrences
+        if j < len(lst):
+            del lst[i + 1:j]
+
+            # Move to the next occurrence for further processing
+            i = j
+        else:
+            i += 1
+
+    return lst
 
 def getValidNeighbors(x, y):
     validDirections = []
-    print('#####', file=sys.stderr)
     minDist = float(('inf'))
     for i in range(4):
-        print(sensors[i].distance_centimeters, file=sys.stderr)
         minDist = min(minDist, sensors[i].distance_centimeters)
         if sensors[i].distance_centimeters > 20:
             validDirections.append(directions[i])
@@ -85,6 +123,18 @@ def getValidNeighbors(x, y):
 
     if minDist > 30:
         print('Solved the maze', file=sys.stderr)
+        my_coordinates = record_path
+        result = delete_between_coordinates(my_coordinates.copy())
+        print(result)
+
+        new_list = []
+
+        for i in result:
+            if i not in new_list:
+                new_list.append(i)
+
+        print(new_list, file=sys.stderr)
+        
         exit()
 
     validNeighbors = []
@@ -99,13 +149,31 @@ def getValidNeighbors(x, y):
 def dfs(x, y):
     global visited
     visited.add((x, y))
-    print(x, y, file=sys.stderr)
+    #print(x, y, file=sys.stderr)
 
     for a, b, d in getValidNeighbors(x, y):
+        print(record_path,file=sys.stderr)
         moveInDirection(d)
         dfs(a, b) 
         moveOppositeDirection(d)
-  
+'''
+def learnt_path_move(final_list):
+    for i in range(final_list):
+
+# Online Python - IDE, Editor, Compiler, Interpreter
+
+def runner(a,b,mylist):
+        for x, y in my_coordinates:
+            print("x:", x, ", y:", y)
+            a = x
+            b = y
+            
+ 
+
+
+my_coordinates = [(1, 2), (3, 4), (1, 2), (5, 6), (3, 4), (7, 8) , (3,4)]
+runner(a,b,my_coordinates)
+'''
     
 def main():
     dfs(0, 0)

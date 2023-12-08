@@ -44,10 +44,11 @@ F_foward = calculate_forces(1, 0, 0)
 F_left = calculate_forces(0, -1, 0)
 F_right = calculate_forces(0, 1, 0)
 F_back = calculate_forces(-1, 0, 0)
+wait_time = 1.41
 
 def moveForward():
     set_motor_speeds(*F_foward)
-    sleep(1.4)
+    sleep(wait_time)
     while front_sensor.distance_centimeters_continuous < 3:
         set_motor_speeds(*F_foward)
         sleep(0.15)
@@ -66,7 +67,7 @@ def adjustForward():
 
 def turnLeft():
     set_motor_speeds(*F_left)
-    sleep(1.4)
+    sleep(wait_time)
     while left_sensor.distance_centimeters_continuous < 3:
         set_motor_speeds(*F_left)
         sleep(0.15)
@@ -85,7 +86,7 @@ def adjustLeft():
 
 def turnRight():
     set_motor_speeds(*F_right)
-    sleep(1.4)
+    sleep(wait_time)
     while right_sensor.distance_centimeters_continuous < 3:
         set_motor_speeds(*F_right)
         sleep(0.15)
@@ -104,7 +105,7 @@ def adjustRight():
 
 def turnAround():
     set_motor_speeds(*F_back)
-    sleep(1.4)
+    sleep(wait_time)
     while back_sensor.distance_centimeters_continuous < 3:
         set_motor_speeds(*F_back)
         sleep(0.15)
