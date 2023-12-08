@@ -44,7 +44,7 @@ F_foward = calculate_forces(1, 0, 0)
 F_left = calculate_forces(0, -1, 0)
 F_right = calculate_forces(0, 1, 0)
 F_back = calculate_forces(-1, 0, 0)
-wait_time = 1.41
+wait_time = 1.4
 
 def moveForward():
     set_motor_speeds(*F_foward)
