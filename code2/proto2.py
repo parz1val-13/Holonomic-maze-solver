@@ -57,9 +57,9 @@ def center_robot(direction):
         right_distance = right_sensor.distance_centimeters_continuous
         if abs(left_distance - right_distance) > 1:
             if left_distance > right_distance and right_distance > 2:
-                movement.adjustRight()
-            elif left_distance < 2:
                 movement.adjustLeft()
+            else:
+                movement.adjustRight()
     elif direction in [Direction.EAST, Direction.WEST]:
         # Use sensors 1 and 3 to center
         front_distance = front_sensor.distance_centimeters_continuous
@@ -67,7 +67,7 @@ def center_robot(direction):
         if abs(front_distance - back_distance) > 1:
             if front_distance > back_distance and back_distance > 2:
                 movement.adjustForward()
-            elif front_distance < 2:
+            else:
                 movement.adjustAround()
 
 

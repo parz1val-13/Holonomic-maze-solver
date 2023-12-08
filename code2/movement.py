@@ -2,7 +2,7 @@
 
 from ev3dev2.motor import Motor, OUTPUT_A, OUTPUT_B, OUTPUT_C
 #from ev3dev2.motor import MoveTank, LargeMotor, OUTPUT_B, OUTPUT_C, MoveDifferential, SpeedRPM, SpeedPercent
-from ev3dev2.sensor.lego import ColorSensor, GyroSensor, UltrasonicSensor
+from ev3dev2.sensor.lego import UltrasonicSensor
 from time import sleep, time
 import math
 import sys
@@ -12,6 +12,13 @@ import sys
 motor1 = Motor(OUTPUT_A)
 motor2 = Motor(OUTPUT_B)
 motor3 = Motor(OUTPUT_C)
+
+left_sensor = UltrasonicSensor('in4')
+right_sensor = UltrasonicSensor('in2')
+front_sensor = UltrasonicSensor('in1')
+back_sensor = UltrasonicSensor('in3')
+
+sensors = [front_sensor, back_sensor, left_sensor, right_sensor]
 
 # Define the angles for each motor in radians.
 a1 = math.radians(0)  # Motor 1 is at 0 degrees.
@@ -40,7 +47,10 @@ F_back = calculate_forces(-1, 0, 0)
 
 def moveForward():
     set_motor_speeds(*F_foward)
-    sleep(1.5)
+    sleep(1.4)
+    while front_sensor.distance_centimeters_continuous < 3:
+        set_motor_speeds(*F_foward)
+        sleep(0.15)
     # Stop the motors.
     motor1.off()
     motor2.off()
@@ -48,7 +58,7 @@ def moveForward():
 
 def adjustForward():
     set_motor_speeds(*F_foward)
-    sleep(0.1)
+    sleep(0.15)
     # Stop the motors.
     motor1.off()
     motor2.off()
@@ -56,7 +66,10 @@ def adjustForward():
 
 def turnLeft():
     set_motor_speeds(*F_left)
-    sleep(1.5)
+    sleep(1.4)
+    while left_sensor.distance_centimeters_continuous < 3:
+        set_motor_speeds(*F_left)
+        sleep(0.15)
     # Stop the motors.
     motor1.off()
     motor2.off()
@@ -64,7 +77,7 @@ def turnLeft():
 
 def adjustLeft():
     set_motor_speeds(*F_left)
-    sleep(0.1)
+    sleep(0.15)
     # Stop the motors.
     motor1.off()
     motor2.off()
@@ -72,7 +85,10 @@ def adjustLeft():
 
 def turnRight():
     set_motor_speeds(*F_right)
-    sleep(1.5)
+    sleep(1.4)
+    while right_sensor.distance_centimeters_continuous < 3:
+        set_motor_speeds(*F_right)
+        sleep(0.15)
     # Stop the motors.
     motor1.off()
     motor2.off()
@@ -80,7 +96,7 @@ def turnRight():
 
 def adjustRight():
     set_motor_speeds(*F_right)
-    sleep(0.1)
+    sleep(0.15)
     # Stop the motors.
     motor1.off()
     motor2.off()
@@ -88,7 +104,10 @@ def adjustRight():
 
 def turnAround():
     set_motor_speeds(*F_back)
-    sleep(1.5)
+    sleep(1.4)
+    while back_sensor.distance_centimeters_continuous < 3:
+        set_motor_speeds(*F_back)
+        sleep(0.15)
     # Stop the motors.
     motor1.off()
     motor2.off()
@@ -96,7 +115,7 @@ def turnAround():
 
 def adjustAround():
     set_motor_speeds(*F_back)
-    sleep(0.1)
+    sleep(0.15)
     # Stop the motors.
     motor1.off()
     motor2.off()
